@@ -116,7 +116,7 @@ FROM (
 --Finding the Galaxy Coaster IDs
 SELECT attraction_id, attraction_name FROM dim_attraction WHERE attraction_name = 'Galaxy Coaster';
 
--- Update all fact tables to use attraction_id = 1 for Galaxy Coaste
+-- Update all fact tables to use attraction_id = 1 for Galaxy Coaster
 UPDATE fact_ride_events
 SET attraction_id = 1  
 WHERE attraction_id = 6;
