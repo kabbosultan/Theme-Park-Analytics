@@ -115,8 +115,7 @@ For the complete set of advanced queries, see the query file: [/sql/04_ctes_wind
 * **Recommendation:** **Prioritize capital and operational budget for Q4 on fixing the top 3 bottleneck rides.** Frame this as a direct investment in improving the park's core KPIs: guest satisfaction and per-capita spending.
 
 ### For the Operations Director
-* **Insight:** Guest "wait tolerance" varies by attraction. High-thrill rides like Dragon Drop can sustain longer waits without a severe drop in satisfaction, while other attractions like Wild Rapids see satisfaction plummet with shorter waits. Furthermore, the highest-spending guests are those who experience moderate, not minimal, wait times (the "engagement sweet spot").
-
+* **Insight:** Guest "wait tolerance" varies by attraction. High-thrill rides like Dragon Drop can sustain longer waits without a severe drop in satisfaction, while other attractions like Wild Rapids see satisfaction plummet with shorter waits.
 * **Recommendations:** 
 
   * **Implement a Tiered Intervention Strategy**:
@@ -125,14 +124,12 @@ For the complete set of advanced queries, see the query file: [/sql/04_ctes_wind
 
     2. **Priority 2 (Experience Enhancement - High Wait Tolerance):** For high-thrill, high-satisfaction rides like Dragon Drop, the long wait is less damaging but still an opportunity. Introduce a virtual queue here as a premium feature to enhance the experience, rather than as an urgent fix.
 
-  * **Optimize for the "Sweet Spot":** The operational goal should not be to eliminate all waits, but to keep the majority of attraction queues below the 30-minute frustration threshold. This prevents the significant drop-off in guest spending associated with long waits and keeps guests in the high-value "engagement sweet spot."
-
   * **Reallocate Staff Dynamically:** Use the high_wait_flag feature in conjunction with time-of-day data to identify the precise hours when bottlenecks form. Reallocate staff to increase ride throughput only during these critical windows, optimizing labor costs.
 
 
 
 ### For the Marketing Director
-* **Insight:** The in-park experience, particularly wait times, directly influences guest spending. A frustrating wait is a direct barrier to revenue. But there is a "wait tolerence" of 30 minutes which results in maximum spending. This create new marketing opportunities.
+* **Insight:** The in-park experience, particularly wait times, directly influences guest spending. A frustrating wait is a direct barrier to revenue.
 * **Recommendations:**
     1.  **Market the Fixes, Not the Problems:** Heavily promote the new "Virtual Queue" system on Space Theater and Wild Rapids, which have a low wait tolerence. Frame it as a premium benefit that gives guests more freedom to enjoy the park, turning an operational improvement into a marketing win.
     2.  **Create a "Thrill Seeker's Pass:** For rides with high wait tolerance like Dragon Drop, bundle a one-time virtual queue reservation with a food or merchandise voucher. This targets guests who are already willing to wait and encourages them to spend more.
