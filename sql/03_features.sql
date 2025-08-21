@@ -31,7 +31,7 @@ SET wait_bucket = CASE
   --Verifying
  SELECT wait_bucket FROM fact_ride_events;
  
- --(I know we are only supposed to choose 2 from the list but I ended up making this one so decided to keep it)
+ --(I know we are only supposed to choose 2 from the list but I ended up making this one so I decided to keep it)
 -- Feature 3 : is_repeat_guest (flag guests with >1 visit) 
 -- Why: Repeat guests are more valuable; tracking them helps target loyalty campaigns and measure retention.
 ALTER TABLE dim_guest ADD COLUMN is_repeat_guest INTEGER;
@@ -57,6 +57,8 @@ SET spend_per_person =
     ELSE NULL
   END;
   
+  
+  --Verifying
 SELECT spend_per_person from fact_visits;
 
 
@@ -68,7 +70,7 @@ ALTER TABLE fact_visits ADD COLUMN high_wait_flag INTEGER;
 
 -- Query to identify top 3 bottleneck attraction IDs
 -- This will provide the attraction_id numbers to use in the high_wait_flag feature
---Result Top 3 IDs: 3,2,6
+--Result Top 3 IDs: 3,2,8
 SELECT 
   e.attraction_id,
   a.attraction_name,
@@ -91,7 +93,7 @@ SET high_wait_flag = CASE
     SELECT 1
     FROM fact_ride_events e
     WHERE e.visit_id = fact_visits.visit_id
-      AND e.attraction_id IN (3, 2, 6) 
+      AND e.attraction_id IN (3, 2, 8) 
       AND e.wait_minutes >= 30
   ) THEN 1 ELSE 0 END;
   
@@ -106,5 +108,47 @@ SELECT DISTINCT promotion_code
 FROM fact_visits
 ORDER BY promotion_code;
 
+-- Feature 6 (Created after done gaining insights from viz): wait_tolerance (Categorize attractions by how well they handle long waits)
+-- Why: This formalizes our key insight that guest satisfaction's response to queues varies by attraction.
 
+ALTER TABLE dim_attraction ADD COLUMN wait_tolerance TEXT;
+
+WITH attraction_metrics AS (
+  -- Pre-calculate average wait and satisfaction for each ride
+  SELECT
+    a.attraction_id,
+    AVG(e.wait_minutes) AS avg_wait,
+    AVG(e.satisfaction_rating) AS avg_satisfaction
+  FROM dim_attraction a
+  JOIN fact_ride_events e ON a.attraction_id = e.attraction_id
+  WHERE e.wait_minutes IS NOT NULL AND e.satisfaction_rating IS NOT NULL
+  GROUP BY a.attraction_id
+)
+-- Update the new column based on the calculated metrics
+UPDATE dim_attraction
+SET wait_tolerance = (
+  SELECT
+    CASE
+      -- High Tolerance: Rides that sustain long waits while keeping satisfaction relatively high.
+      -- These are typically high-thrill, signature attractions.
+      WHEN m.avg_wait >= 45 AND m.avg_satisfaction >= 3.0 THEN 'High'
+
+      -- Low Tolerance: Rides where satisfaction drops significantly even with moderate-to-long waits.
+      -- These are urgent priorities for operational fixes like virtual queues.
+      WHEN m.avg_wait >= 40 AND m.avg_satisfaction < 2.8 THEN 'Low'
+
+      -- Standard Tolerance: All other rides.
+      ELSE 'Standard'
+    END
+  FROM attraction_metrics m
+  WHERE m.attraction_id = dim_attraction.attraction_id
+);
+
+-- Verifying the new feature
+-- This query will show the new 'wait_tolerance' category for each attraction.
+SELECT
+  attraction_name,
+  wait_tolerance
+FROM dim_attraction
+ORDER BY wait_tolerance;
 
